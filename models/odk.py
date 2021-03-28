@@ -1,6 +1,8 @@
+# -*- coding: utf-8 -*-
+
 from odoo import _, exceptions
 
-from requests.auth import HTTPBasicAuth, AuthBase
+from requests.auth import AuthBase
 import requests
 import json
 import logging
