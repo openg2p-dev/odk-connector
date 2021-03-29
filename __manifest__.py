@@ -15,4 +15,5 @@
     ],
     'demo': [],
     'installable': True,
+    'application': True,
 }

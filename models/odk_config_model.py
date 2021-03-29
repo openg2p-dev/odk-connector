@@ -12,27 +12,27 @@ class ODKConfig(models.Model):
     odk_endpoint = fields.Char(
         string='ODK Base URL',
         required=True,
-        readonly=True
+        # readonly=True
     )
     odk_project_id = fields.Integer(
         string='ODK Project ID',
         required=True,
-        readonly=True
+        # readonly=True
     )
     odk_form_id = fields.Char(
         string='ODK Form ID',
         required=True,
-        readonly=True
+        # readonly=True
     )
     odk_email = fields.Char(
         string='ODK User EMail',
         required=True,
-        readonly=True
+        # readonly=True
     )
     odk_password = fields.Char(
         string='ODK User Password',
         required=True,
-        readonly=True
+        # readonly=True
     )
 
 
