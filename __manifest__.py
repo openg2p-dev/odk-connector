@@ -8,7 +8,10 @@
         'base',
         'web',
     ],
-    'data': [],
+    'data': [
+        'views/action.xml',
+        'views/menu.xml',
+    ],
     'demo': [],
     'installable': True,
 }
