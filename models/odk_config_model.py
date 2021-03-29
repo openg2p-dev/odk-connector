@@ -24,5 +24,15 @@ class ODKConfig(models.Model):
         required=True,
         readonly=True
     )
+    odk_email = fields.Char(
+        string='ODK User EMail',
+        required=True,
+        readonly=True
+    )
+    odk_password = fields.Char(
+        string='ODK User Password',
+        required=True,
+        readonly=True
+    )
 
 
