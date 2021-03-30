@@ -9,6 +9,10 @@ class ODKConfig(models.Model):
     _order = 'id'
 
     # Columns
+    form_name = fields.Char(
+        string="Form Name",
+        required=True,
+    )
     odk_endpoint = fields.Char(
         string='ODK Base URL',
         required=True,
