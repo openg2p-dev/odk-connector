@@ -43,6 +43,10 @@ class ODKConfig(models.Model):
         string="Active",
         default=False
     )
+    odk_last_sync_date = fields.Datetime(
+        string='Last Sync Date with ODK',
+        readonly=True
+    )
 
     @api.multi
     def odk_button_update_form_submissions(self):
@@ -66,12 +70,8 @@ class ODKConfig(models.Model):
     # Method calling submissions call to fetch data
     def call_submission(self):
         submissions_obj = self.env['odk.submissions']
-        submissions_obj.submissions_entry(self.odk_endpoint,
-                                          self.odk_email,
-                                          self.odk_password,
-                                          self.odk_project_id,
-                                          self.odk_form_id
-                                          )
+        submissions_obj.submissions_entry(self)
+        print("Call Submission ends")
 
 
 
