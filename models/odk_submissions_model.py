@@ -43,14 +43,12 @@ class ODKSubmissions(models.Model):
 
     # Entrypoint for submissions class. This will be called by other classes. TODO: Change to take 'config' as argument
     def submissions_entry(self, odk_config):
-        # odk = ODK('submission', odk_user, odk_password)
-        # print("Printing from Submissions: ", odk.get((odk_project, odk_form)))
         odk_response_data = self.get_data_from_odk(odk_config)
         print("get_data_from_odk: ", odk_response_data)
 
         for value in odk_response_data:
             # Add check if the record already exists in the database
-            existing_object = self.search(['odk_submission_id', '=', value.get('__id')])
+            existing_object = self.search([('odk_submission_id', '=', value.get('__id'))])
             if len(existing_object) >= 1:
                 print("Submissions with Id: ", value.get('__id'), " already exists.Skipping.")
 
@@ -62,8 +60,8 @@ class ODKSubmissions(models.Model):
                                                   'odoo_corresponding_id': registration.id})
                 print("odk_create_submissions_data: ", "Completed")
 
-        config = self.odk_update_configuration({'odk_last_sync_date': fields.Datetime.new()}, odk_config.id)
-        print("Successfully update config:", config.form_name, "with last sync: ", config.odk_last_sync_date)
+        config = self.odk_update_configuration({'odk_last_sync_date': fields.Datetime.now()}, odk_config.id)
+        print("Successfully update config:", config)
 
     # def get_data_from_odk(self, odk_link, odk_user, odk_password, odk_project, odk_form):
     def get_data_from_odk(self, odk_config):
@@ -71,12 +69,8 @@ class ODKSubmissions(models.Model):
         response = odk.get((odk_config.odk_project_id, odk_config.odk_form_id))
         return response['value']
 
-    # def odk_master_some(self, odk_responses, odk_config_id):
-    #     for value in odk_responses:
-    #         # Add check if the record already exists in the database
-    #         self.odk_create_submissions_data(value, {'odk_config_id': odk_config_id})
-
     def create_registration_from_submission(self, data, extra_data=None):
+        extra_data = extra_data and extra_data or {}
         map_dict = self.get_conversion_dict()
         res = {}
         for k, v in map_dict.items():
