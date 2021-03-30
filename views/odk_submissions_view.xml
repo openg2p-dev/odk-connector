@@ -6,12 +6,12 @@
         <field name="name">odk.submissions.tree</field>
         <field name="model">odk.submissions</field>
         <field name="arch" type="xml">
-            <tree string="Submissions">
+            <tree string="Submissions" create="false" import="false">
+                <field name="odoo_corresponding_id" readonly="1" widget="many2onebutton"/>
                 <field name="odk_submission_id"/>
                 <field name="submission_date" readonly="1"/>
                 <field name="odk_config_id" readonly="1" widget="many2onebutton"/>
                 <field name="submission_response" readonly="1"/>
-                <field name="odoo_corresponding_id" readonly="1" widget="many2onebutton"/>
             </tree>
         </field>
     </record>
