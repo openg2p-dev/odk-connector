@@ -115,9 +115,7 @@ class HTTPTokenAuth(AuthBase):
         try:
             response = requests.post(url, json=data)
         except Exception as err:
-            _logger.warning(
-                "Error in calling Auth URL: %s", err.__str__(),
-            )
+            raise exceptions.Warning(_("Error in calling Auth URL: '%s'.\n") % url)
 
         if response.status_code == _CODE_401:
             raise exceptions.Warning(_(
