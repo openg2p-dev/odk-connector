@@ -2,6 +2,7 @@
 
 from odoo import _
 from odoo import api, fields, models
+from .odk import ODK
 
 
 class ODKSubmissions(models.Model):
@@ -37,6 +38,12 @@ class ODKSubmissions(models.Model):
         string="OpenG2P Registration",
         help="Registration linked to the submission."
     )
+
+    # Entrypoint for submissions class. This will be called by other classes.
+    def submissions_entry(self, odk_link, odk_user, odk_password, odk_project, odk_form):
+        odk = ODK('submission', odk_user, odk_password)
+        print("Printing from Submissions: ", odk.get((odk_project, odk_form)))
+
 
 
 

@@ -32,7 +32,7 @@ _CODE_201 = 201
 
 class ODK(object):
 
-    def __init__(self, operation_type, user, password, max_try):
+    def __init__(self, operation_type, user, password, max_try=_MAX_NUMBER_REQUEST):
         super(ODK, self).__init__()
         self.user = user
         self.operation_type = operation_type
