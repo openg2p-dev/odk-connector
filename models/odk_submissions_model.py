@@ -9,7 +9,6 @@ class ODKSubmissions(models.Model):
     _name = 'odk.submissions'
     _description = 'ODK Form Submissions'
     _order = 'submission_date'
-    # _inherit = ['openg2p.registration']
 
     # Columns
     odk_submission_id = fields.Char(

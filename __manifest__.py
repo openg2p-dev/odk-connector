@@ -9,6 +9,7 @@
         'web',
     ],
     'data': [
+        'views/odk_submissions_view.xml',
         'views/odk_config_form.xml',
         'views/action.xml',
         'views/menu.xml',

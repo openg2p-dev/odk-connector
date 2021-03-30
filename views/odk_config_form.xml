@@ -31,6 +31,7 @@
                 <field name="odk_project_id" readonly="1"/>
                 <field name="odk_form_id" readonly="1"/>
                 <field name="odk_email" readonly="1"/>
+                <field name="odk_last_sync_date" readonly="1"/>
                 <field name="is_active"/>
                 <button name="odk_button_update_form_submissions"
                     type="object"
