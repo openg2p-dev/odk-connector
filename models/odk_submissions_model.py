@@ -40,22 +40,22 @@ class ODKSubmissions(models.Model):
         readonly=True
     )
 
-    # Entrypoint for submissions class. This will be called by other classes.
-    def submissions_entry(self, odk_config):
-        new_submissions_count = self.get_data_from_odk(odk_config)
-        print("get_data_from_odk: ", new_submissions_count)
+    # Method to update/sync submissions from a specific config
+    def update_submissions(self, odk_config):
+        updated_submissions_count = self.get_data_from_odk(odk_config)
 
         config = self.odk_update_configuration({'odk_last_sync_date': fields.Datetime.now(),
-                                                'odk_submissions_count': new_submissions_count},
+                                                'odk_submissions_count': updated_submissions_count},
                                                odk_config.id)
         print("Successfully update config:", config)
 
+    # Method responsible for getting new data from ODK
     def get_data_from_odk(self, odk_config):
-        odk = ODK('submission', odk_config.odk_email, odk_config.odk_password)
+        odk = ODK('submission', odk_config.odk_endpoint, odk_config.odk_email, odk_config.odk_password)
         count_response = odk.get((odk_config.odk_project_id, odk_config.odk_form_id),
                                  {'$top': 0, '$count': 'true'})  # Call ODK API for new count
 
-        last_count = odk_config.odk_submissions_count  # Add this field in config
+        last_count = odk_config.odk_submissions_count
         new_count = count_response['@odata.count']
         remaining_count = new_count - last_count
 
@@ -69,7 +69,7 @@ class ODKSubmissions(models.Model):
             submission_response = odk.get((odk_config.odk_project_id, odk_config.odk_form_id),
                                           {'$top': top_count,
                                            '$skip': skip_count,
-                                           '$count': 'true'})  # Make API call with $top and $skip
+                                           '$count': 'true'})
             self.save_data_into_all(submission_response['value'], odk_config)
 
             last_count = last_count + 100
@@ -78,40 +78,41 @@ class ODKSubmissions(models.Model):
             top_count = remaining_count + 5  # $top
             submission_response = odk.get((odk_config.odk_project_id, odk_config.odk_form_id),
                                           {'$top': top_count,
-                                           '$count': 'true'})  # Make API call with $top
+                                           '$count': 'true'})
             self.save_data_into_all(submission_response['value'], odk_config)
-
         return new_count
 
+    # Umbrella method to save data in odk.submissions and openg2p.registration
     def save_data_into_all(self, odk_response_data, odk_config):
         for value in odk_response_data:
             # Add check if the record already exists in the database
             existing_object = self.search([('odk_submission_id', '=', value.get('__id'))])
 
             if len(existing_object) >= 1:
-                print("Submissions with Id: ", value.get('__id'), " already exists.Skipping.")
+                print("Submissions with Id: ", value.get('__id'), " already exists. Skipping.")
 
             else:
                 registration = self.create_registration_from_submission(value)
-                print("create_registration_from_submission: ", registration)
                 self.odk_create_submissions_data(value,
                                                  {'odk_config_id': odk_config.id,
                                                   'odoo_corresponding_id': registration.id})
-                print("odk_create_submissions_data: ", "Completed")
 
+    # Method to add registration record from ODK submission
     def create_registration_from_submission(self, data, extra_data=None):
         extra_data = extra_data and extra_data or {}
         map_dict = self.get_conversion_dict()
         res = {}
+
         for k, v in map_dict.items():
             if hasattr(self.env['openg2p.registration'], k) and data.get(v, False):
                 res.update({k: data[v]})
-                print("Interim step, res value: ", res)
+
         res.update(extra_data)
         registration = self.env['openg2p.registration'].create(res)
         return registration
 
-    # Need to pass odoo_corresponding_id in extra_data
+    # Store submissions data in odk.submissions
+    # Need to pass odoo_corresponding_id and odk_config_id in extra_data
     def odk_create_submissions_data(self, data, extra_data=None):
         extra_data = extra_data and extra_data or {}
         res = {}
@@ -123,9 +124,11 @@ class ODKSubmissions(models.Model):
         res.update(extra_data)
         self.create(res)
 
+    # Wrapper function to update config
     def odk_update_configuration(self, data, odk_config_id):
         return self.env['odk.config'].search([('id', '=', odk_config_id)]).write(data)
 
+    # Mappings between openg2p.registration and odk form fields
     def get_conversion_dict(self):
         return {
             "firstname": "firstname",

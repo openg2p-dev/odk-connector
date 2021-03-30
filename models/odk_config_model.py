@@ -55,9 +55,6 @@ class ODKConfig(models.Model):
 
     @api.multi
     def odk_button_update_form_submissions(self):
-        # odk = ODK('submission', self.odk_email, self.odk_password)
-        # arguments = (self.odk_project_id, self.odk_form_id)
-        # print("Button Clicked = ", odk.get(arguments))
         self.call_submission()
 
     # Method executed by cron job to fetch submissions
@@ -75,7 +72,7 @@ class ODKConfig(models.Model):
     # Method calling submissions call to fetch data
     def call_submission(self):
         submissions_obj = self.env['odk.submissions']
-        submissions_obj.submissions_entry(self)
+        submissions_obj.update_submissions(self)
         print("Call Submission ends")
 
 

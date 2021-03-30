@@ -12,7 +12,7 @@ _logger = logging.getLogger(__name__)
 # Retry mechanism that needs to be decided
 _MAX_NUMBER_REQUEST = 30
 
-_BASE_URL = 'https://odk.tekkie.codes/'
+# _BASE_URL = 'https://odk.tekkie.codes/'
 
 _ODK_TYPE_URL = {
     'auth': {
@@ -32,12 +32,13 @@ _CODE_201 = 201
 
 class ODK(object):
 
-    def __init__(self, operation_type, user, password, max_try=_MAX_NUMBER_REQUEST):
+    def __init__(self, base_url, operation_type, user, password, max_try=_MAX_NUMBER_REQUEST):
         super(ODK, self).__init__()
+        self.base_url = base_url
         self.user = user
         self.operation_type = operation_type
         self.max_try = max_try
-        self.auth = HTTPTokenAuth(user, password)
+        self.auth = HTTPTokenAuth(base_url, user, password)
 
     # Build URL for the API call.
     # TODO: Add support for updating without calling stored data
@@ -48,7 +49,7 @@ class ODK(object):
             raise exceptions.Warning(
                 _("'%s' is not implemented.") % self.operation_type
             )
-        complete_url = _BASE_URL + url % tuple(arguments)
+        complete_url = self.base_url + url % tuple(arguments)
         return complete_url
 
     # Caller function for GET method
@@ -96,12 +97,12 @@ class HTTPTokenAuth(AuthBase):
 
     auth_header_format = "Bearer {}"
 
-    def __init__(self, user, password):
+    def __init__(self, base_url, user, password):
         auth_data = {
             'email': user,
             'password': password
         }
-        url = _BASE_URL + _ODK_TYPE_URL['auth']['session']
+        url = base_url + _ODK_TYPE_URL['auth']['session']
         response_data = self.auth_call(url, auth_data)
         self.token = response_data['token']
 
