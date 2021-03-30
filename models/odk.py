@@ -52,21 +52,23 @@ class ODK(object):
         return complete_url
 
     # Caller function for GET method
-    def get(self, arguments, url_type='odata'):
+    def get(self, arguments, params, url_type='odata'):
         url = self._build_url(arguments, url_type)
-        return self.call_api(url, 'get')
+        return self.call_api(url, params, 'get')
 
     # Function to make API calls
-    def call_api(self, url, call_type, data=False):
+    def call_api(self, url, query_params, call_type, data=False):
         _logger.info("Calling %s" % url)
+        query_params = query_params and query_params or {}
+
         for i in range(self.max_try):
             try:
                 if call_type == "get":
-                    response = requests.get(url, auth=self.auth)
+                    response = requests.get(url, params=query_params, auth=self.auth)
                     break
                 elif call_type == "post":
                     json_data = json.dumps(data)
-                    response = requests.post(url, auth=self.auth, json=json_data)
+                    response = requests.post(url, params=query_params, auth=self.auth, json=json_data)
                     break
             except Exception as err:
                 _logger.warning(

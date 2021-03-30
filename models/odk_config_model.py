@@ -47,6 +47,11 @@ class ODKConfig(models.Model):
         string='Last Sync Date with ODK',
         readonly=True
     )
+    odk_submissions_count = fields.Integer(
+        string='Submissions Count',
+        readonly=True,
+        default=0
+    )
 
     @api.multi
     def odk_button_update_form_submissions(self):
