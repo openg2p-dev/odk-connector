@@ -34,5 +34,13 @@ class ODKConfig(models.Model):
         required=True,
         # readonly=True
     )
+    is_active = fields.Boolean(
+        string="Active",
+        default=False
+    )
+
+    @api.multi
+    def odk_button_update_submissions(self):
+        print("Button Clicked = ", self.id)
 
 
