@@ -108,6 +108,7 @@ class ODKSubmissions(models.Model):
         #         res.update({k: data[v]})
 
         # res.update(extra_data)
+        # registration = self.env['openg2p.registration'].create(res)
         registration = self.env['openg2p.registration'].create_registration_from_odk(data)
         return registration
 
