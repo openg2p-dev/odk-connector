@@ -99,16 +99,17 @@ class ODKSubmissions(models.Model):
 
     # Method to add registration record from ODK submission
     def create_registration_from_submission(self, data, extra_data=None):
-        extra_data = extra_data and extra_data or {}
-        map_dict = self.get_conversion_dict()
-        res = {}
+        # extra_data = extra_data and extra_data or {}
+        # map_dict = self.get_conversion_dict()
+        # res = {}
 
-        for k, v in map_dict.items():
-            if hasattr(self.env['openg2p.registration'], k) and data.get(v, False):
-                res.update({k: data[v]})
+        # for k, v in map_dict.items():
+        #     if hasattr(self.env['openg2p.registration'], k) and data.get(v, False):
+        #         res.update({k: data[v]})
 
-        res.update(extra_data)
-        registration = self.env['openg2p.registration'].create(res)
+        # res.update(extra_data)
+        # registration = self.env['openg2p.registration'].create(res)
+        registration = self.env['openg2p.registration'].create_registration_from_odk(data)
         return registration
 
     # Store submissions data in odk.submissions
