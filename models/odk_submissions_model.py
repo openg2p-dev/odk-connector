@@ -22,6 +22,11 @@ class ODKSubmissions(models.Model):
         required=True,
         readonly=True
     )
+    odk_submission_date = fields.Date(
+        string='ODK Submission Date',
+        required=True,
+        readonly=True
+    )
     odk_config_id = fields.Many2one(
         'odk.config',
         string='Configuration',
