@@ -10,6 +10,7 @@
                 <field name="odoo_corresponding_id" readonly="1" widget="many2onebutton"/>
                 <field name="odk_submission_id"/>
                 <field name="submission_date" readonly="1"/>
+                <field name="odk_submission_date" readonly="1"/>
                 <field name="odk_config_id" readonly="1" widget="many2onebutton"/>
                 <field name="submission_response" readonly="1"/>
             </tree>
